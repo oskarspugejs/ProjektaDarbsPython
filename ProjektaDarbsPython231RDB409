@@ -79,7 +79,7 @@ while True:
         current_row.extend([stock_symbol, current_price, alert_type, alert_price])
 
     ws.append(current_row)
-    wb.save("excell_piemers.xlsx")
+    wb.save("stock_prices.xlsx")
 
     print("Triggered Alerts:", triggered_alerts)
     driver.quit()
