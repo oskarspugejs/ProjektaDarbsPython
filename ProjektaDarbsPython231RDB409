@@ -1,0 +1,134 @@
+import time
+import datetime
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from openpyxl import Workbook
+import os
+import sys
+sys.stderr = open(os.devnull, 'w')
+
+stock_symbols = input("Input stock symbol seperated by commas(for example BTC-USD,TSLA,NVDA preferably with the same currency): ").split(',')
+
+alert_prices = {}
+for symbol in stock_symbols:
+  high_alert_price = float(input(f"Set the high alert price for {symbol}: "))
+  low_alert_price = float(input(f"Set the low alert price for {symbol}: "))
+  alert_prices[symbol] = {'high': high_alert_price, 'low': low_alert_price}
+
+wb = Workbook()
+ws = wb.active
+
+headers = ["Date/Time"]
+for i, stock_symbol in enumerate(stock_symbols):
+  headers.extend([f"stock symbol {i + 1}", f"price {i+1}", f"alert type {i+1}", f"alert price {i+1}"])
+
+ws.append(headers)
+
+service = Service()
+option = webdriver.ChromeOptions()
+driver = webdriver.Chrome(service=service, options=option)
+
+start_time = time.time()
+
+while True:
+  elapsed_time = time.time() - start_time
+  if elapsed_time >= 1200:
+    break
+
+  current_row = []
+  current_datetime = time.strftime("%Y-%m-%d %H:%M:%S")
+  current_row.append(current_datetime)
+
+  triggered_alerts = []
+
+  for stock_symbol in stock_symbols:
+    driver.get(f'https://finance.yahoo.com/quote/{stock_symbol}')
+    time.sleep(2)
+
+    try:
+      accept_all_button = WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CLASS_NAME, "accept-all")))
+      accept_all_button.click()
+      time.sleep(2)
+    except:
+      pass
+
+    price_element = driver.find_element(By.XPATH, '//*[@id="quote-header-info"]/div[3]/div[1]/div/fin-streamer[1]')
+    current_price_str = price_element.text.replace(',', '')
+    current_price = float(current_price_str)
+    time.sleep(2)
+    
+    print(f"{stock_symbol} - {current_price}")
+
+    alert_type = None
+    alert_price = None
+    
+    if current_price >= alert_prices[stock_symbol]['high']:
+      print (f"{stock_symbol} - High alert triggered! Current price: {current_price}")
+      triggered_alerts.append((stock_symbol, 'high', current_price))
+      alert_type = 'high'
+      alert_price = current_price
+    elif current_price <= alert_prices[stock_symbol]['low']:
+      print (f"{stock_symbol} - Low alert triggered! Current price: {current_price}")
+      triggered_alerts.append((stock_symbol, 'low', current_price))
+      alert_type = 'low'
+      alert_price = current_price
+
+    current_row.extend([stock_symbol, current_price, alert_type, alert_price])
+
+  ws.append(current_row)
+  wb.save("Stock_prices.xlsx")
+  
+  print("Triggered alerts:", triggered_alerts)
+  driver.quit()
+  time.sleep(5)
+  
+  gmail_username = "projektadarbsoskars@gmail.com"
+  gmail_password = "Dro$aParole123"
+  reciever_email = "projektadarbsoskars@gmail.com"
+  
+  driver = webdriver.Chrome()
+  driver.get("https://www.gmail.com")
+  
+  email_input = driver.find_element(By.ID, "identifierId")
+  email_input.send_keys(gmail_username)
+  time.sleep(3)
+  
+  next_button_one = driver.find_element(By.ID, "identifierNext")
+  next_button_one.click
+  time.sleep(3)
+  
+  password_input = driver.find_element(By.NAME, "Passwd")
+  password_input.send_keys(gmail_password)
+  time.sleep(3)
+  
+  next_button_two = driver.find_element(By.ID, "passwordNext")
+  next_button_two.click()
+  time.sleep(20)
+  
+  compose_button = driver.find_element(By.XPATH, '//*[contains(@class, "T-I") and contains(@class, "L3") and contains(@class, "T-I-KE")]')
+  compose_button.click()
+  time.sleep(3)
+  
+  subject = ', '.join(f'{symbol}-{alert_type}-{price}' for symbol, alert_type, price in triggered_alerts)
+  body = "."
+  
+  reciever_input = driver.find_element(By.XPATH, '//input[@class="agP aFw"]')
+  reciever_input.send_keys(reciever_email)
+  time.sleep(3)
+  
+  subject_input = driver.find_element(By.XPATH, '//input[@name="subjectbox"]')
+  subject_input.send_keys(subject)
+  time.sleep(3)
+  
+  body_input = driver.find_element(By.XPATH, '//div[@aria-label="Ziņojuma pamatteksts"]')
+  body_input.send_keys(body)
+  time.sleep(3)
+  
+  send_button = driver.find_element(By.XPATH, '//div[@class="T-I J-J5-Ji aoO v7 T-I-atl L3"]')
+  send_buton.click()
+  time.sleep(15)
+
+driver.quit
