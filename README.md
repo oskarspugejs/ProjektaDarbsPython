@@ -52,6 +52,15 @@ Ir vēlams, bet ne obligāti, šos simbolus ievadīt visus ar vienādām valūt�
 4.Pēc pēdējā simbola cenu robežas iestatīšanas atliek tikai vērot koda darbību līdz tā laika beigām.
 (šobrīd darbības laiks ir 20 minūtes, bet excel_piemers laiks bija 2 stundas).
 
+Idejiski, kods tika izstrādāts lai strādātu vairākas dienas, bet tad ir jāmaina laika vērtība attiecīgajā koda rindā:
+
+while True:
+    elapsed_time = time.time() - start_time
+    if elapsed_time >= 1200:
+        break
+
+Ja vēlaties, lai kods strādā, piemēram, 12h (43200 sekundes), izlabojat if rindiņu uz: "if elapsed_time >=43200" protams bez pēdiņām
+
 ### Secinājumi
 Kods izpilda visus uzdevuma mērķī noteiktās darbības.
 
