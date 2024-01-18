@@ -12,6 +12,8 @@ Diemžēl man nepietiek laika atrisināt visas problēmas ar kļūdas paziņojum
 
 Piemērs chrome/yahoo.com:
 [26700:9992:0117/221316.522:ERROR:ssl_client_socket_impl.cc(975)] handshake failed; returned -1, SSL error code 1, net_error -101
+[6956:2792:0118/173309.147:ERROR:page_load_metrics_update_dispatcher.cc(179)] Invalid first_paint 1.36 s for first_image_paint 1.356 s
+[6956:2792:0118/173309.273:ERROR:page_load_metrics_update_dispatcher.cc(179)] Invalid first_paint 1.36 s for first_image_paint 1.356 s
 
 Kā arī kļūdas paziņojumi kodam, kad pārlūks slēdzas klāt ēpastam.
 
